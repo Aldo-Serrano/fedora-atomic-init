@@ -36,7 +36,7 @@ This will:
 After reboot (required for rpm-ostree), run the bootstrap again to set up containers:
 
 ```bash
-~/.local/bin/bootstrap-fedora.sh
+~/.local/share/chezmoi/bootstrap.sh
 ```
 
 This creates and configures the Toolbx dev containers with the full terminal environment.

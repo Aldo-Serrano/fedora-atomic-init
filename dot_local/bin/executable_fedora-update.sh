@@ -3,7 +3,7 @@ set -euo pipefail
 
 # =============================================================================
 # fedora-update: Update everything in one command
-# Host packages, Flatpak, Distrobox containers, and tools
+# Host packages, Flatpak, Toolbx containers, and tools
 # =============================================================================
 
 RED='\033[0;31m'
@@ -20,10 +20,12 @@ sudo rpm-ostree upgrade || echo "rpm-ostree upgrade failed or no updates availab
 section "Updating Flatpak apps"
 flatpak update -y 2>/dev/null || echo "No Flatpak updates"
 
-section "Updating Distrobox containers"
-if command -v distrobox &>/dev/null; then
-    distrobox upgrade --all 2>/dev/null || echo "Distrobox upgrade skipped"
-fi
+section "Updating Toolbx containers"
+for container in $(toolbox list --containers 2>/dev/null | tail -n +2 | awk '{print $2}'); do
+    echo "  Updating $container..."
+    toolbox run --container "$container" sudo dnf upgrade -y 2>/dev/null || \
+        echo "  Update failed for $container"
+done
 
 section "Updating Oh My Posh"
 if command -v oh-my-posh &>/dev/null; then

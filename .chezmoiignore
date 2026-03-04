@@ -7,7 +7,6 @@ LICENSE
 {{ if ne .chezmoi.os "linux" }}
 run_once_before_01-rpm-ostree.sh
 run_once_before_02-install-tools.sh
-run_once_after_01-setup-containers.sh
-run_once_after_02-setup-dev-flutter.sh
-run_once_after_03-setup-dev-web.sh
+.local/bin/setup-dev-containers.sh
+.local/bin/fedora-update.sh
 {{ end }}

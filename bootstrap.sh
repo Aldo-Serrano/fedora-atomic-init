@@ -65,38 +65,74 @@ install_chezmoi() {
 # Initialize and apply chezmoi
 # -----------------------------------------------------------------------------
 apply_chezmoi() {
-    info "Initializing chezmoi with source repo..."
-    info "You will be prompted for API keys and git identity."
-    echo ""
-
-    chezmoi init "$CHEZMOI_SOURCE"
-    chezmoi apply --verbose
+    if [[ -d "$HOME/.local/share/chezmoi" ]]; then
+        info "chezmoi already initialized. Applying updates..."
+        chezmoi apply --verbose
+    else
+        info "Initializing chezmoi with source repo..."
+        info "You will be prompted for API keys and git identity."
+        echo ""
+        chezmoi init "$CHEZMOI_SOURCE"
+        chezmoi apply --verbose
+    fi
 
     ok "chezmoi configuration applied!"
 }
 
 # -----------------------------------------------------------------------------
+# Setup dev containers
+# -----------------------------------------------------------------------------
+setup_containers() {
+    local setup_script="$HOME/.local/bin/setup-dev-containers.sh"
+
+    if [[ ! -f "$setup_script" ]]; then
+        warn "Container setup script not found at $setup_script"
+        warn "Run 'chezmoi apply' first to install it."
+        return 1
+    fi
+
+    if ! command -v toolbox &>/dev/null; then
+        warn "toolbox not available. May need a reboot first."
+        return 1
+    fi
+
+    info "Setting up dev containers..."
+    bash "$setup_script"
+}
+
+# -----------------------------------------------------------------------------
 # Post-apply: check if reboot is needed
 # -----------------------------------------------------------------------------
-check_reboot() {
+check_reboot_and_continue() {
     if rpm-ostree status | grep -q "pending"; then
         echo ""
         warn "================================================================"
         warn " rpm-ostree has pending changes that require a REBOOT."
-        warn " After rebooting, run this script again to continue setup:"
+        warn " After rebooting, run this script again to finish setup:"
         warn ""
-        warn "   chezmoi apply"
+        warn "   ~/.local/bin/bootstrap-fedora.sh"
+        warn ""
+        warn " Or manually:"
+        warn "   chezmoi apply && setup-dev-containers.sh"
         warn "================================================================"
         echo ""
+
+        # Save bootstrap script for re-run after reboot
+        mkdir -p "$HOME/.local/bin"
+        SCRIPT_PATH="$HOME/.local/bin/bootstrap-fedora.sh"
+        if [[ ! -f "$SCRIPT_PATH" ]] || [[ "$0" != "$SCRIPT_PATH" ]]; then
+            cp "$0" "$SCRIPT_PATH" 2>/dev/null || \
+                curl -fsSL "https://raw.githubusercontent.com/Aldo-Serrano/fedora-atomic-init/main/bootstrap.sh" -o "$SCRIPT_PATH"
+            chmod +x "$SCRIPT_PATH"
+        fi
 
         read -rp "Reboot now? [y/N] " answer
         if [[ "$answer" =~ ^[Yy]$ ]]; then
             systemctl reboot
-        else
-            info "Reboot when ready, then run: chezmoi apply"
         fi
     else
-        ok "No reboot needed. Setup complete!"
+        # No reboot needed - continue with container setup
+        setup_containers
     fi
 }
 
@@ -113,16 +149,16 @@ main() {
     check_system
     install_chezmoi
     apply_chezmoi
-    check_reboot
+    check_reboot_and_continue
 
     echo ""
     ok "Bootstrap finished!"
     echo ""
-    info "Next steps:"
-    echo "  1. If a reboot was requested, reboot and run: chezmoi apply"
-    echo "  2. Open Ghostty terminal to see your configured shell"
-    echo "  3. Enter dev containers: distrobox enter dev-web"
-    echo "  4. Enter dev containers: distrobox enter dev-flutter"
+    info "Quick reference:"
+    echo "  Enter web dev:      dev-web  (or: toolbox enter dev-web)"
+    echo "  Enter flutter dev:  dev-flutter  (or: toolbox enter dev-flutter)"
+    echo "  Update everything:  fedora-update.sh"
+    echo "  Sync dotfiles:      chezmoi update"
     echo ""
 }
 

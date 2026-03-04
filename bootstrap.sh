@@ -4,10 +4,10 @@ set -euo pipefail
 # =============================================================================
 # Fedora COSMIC Atomic - Bootstrap Script
 # Configures a fresh Fedora Atomic install with dev environment from scratch
-# Usage: curl -fsSL https://raw.githubusercontent.com/<user>/fedora-atomic-init/main/bootstrap.sh | bash
+# Usage: curl -fsSL https://raw.githubusercontent.com/Aldo-Serrano/fedora-atomic-init/main/bootstrap.sh | bash
 # =============================================================================
 
-REPO_URL="${REPO_URL:-https://github.com/<user>/fedora-atomic-init.git}"
+REPO_URL="${REPO_URL:-https://github.com/Aldo-Serrano/fedora-atomic-init.git}"
 CHEZMOI_SOURCE="${CHEZMOI_SOURCE:-$REPO_URL}"
 
 RED='\033[0;31m'

@@ -23,7 +23,7 @@ One command to go from a fresh install to a fully configured system with termina
 ### On a fresh Fedora COSMIC Atomic install:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/<user>/fedora-atomic-init/main/bootstrap.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Aldo-Serrano/fedora-atomic-init/main/bootstrap.sh | bash
 ```
 
 This will:
@@ -39,7 +39,7 @@ This will:
 ### On subsequent machines:
 
 ```bash
-sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply <github-username>
+sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply Aldo-Serrano
 ```
 
 ## Project structure

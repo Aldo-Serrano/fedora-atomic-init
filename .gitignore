@@ -1,0 +1,13 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Secrets (chezmoi handles these locally)
+chezmoi.toml
+
+# Editor
+*.swp
+*.swo
+*~
+.vscode/
+.idea/

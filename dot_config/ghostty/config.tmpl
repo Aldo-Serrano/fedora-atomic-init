@@ -1,0 +1,23 @@
+# Ghostty Configuration
+# Managed by chezmoi - edit the source, not this file
+
+# Theme
+theme = light:Rose Pine Dawn, dark:iTerm2 Solarized Dark
+
+# Font
+font-size = 16
+font-family = JetBrains Mono Nerd Font
+
+# Window
+window-decoration = true
+{{ if eq .chezmoi.os "darwin" }}
+# macOS specific
+window-colorspace = display-p3
+macos-titlebar-style = transparent
+macos-titlebar-proxy-icon = hidden
+macos-icon = retro
+{{ end }}
+
+# Behavior
+copy-on-select = clipboard
+mouse-hide-while-typing = true

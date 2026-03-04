@@ -1,0 +1,12 @@
+{{- $gitName := promptStringOnce . "git_name" "Git full name" -}}
+{{- $gitEmail := promptStringOnce . "git_email" "Git email address" -}}
+{{- $anthropicKey := promptStringOnce . "anthropic_api_key" "Anthropic API key (for Claude Code)" -}}
+{{- $openaiKey := promptStringOnce . "openai_api_key" "OpenAI API key (for Codex)" -}}
+{{- $exaKey := promptStringOnce . "exa_api_key" "Exa API key (for MCP search, leave empty to skip)" -}}
+
+[data]
+    git_name = {{ $gitName | quote }}
+    git_email = {{ $gitEmail | quote }}
+    anthropic_api_key = {{ $anthropicKey | quote }}
+    openai_api_key = {{ $openaiKey | quote }}
+    exa_api_key = {{ $exaKey | quote }}
